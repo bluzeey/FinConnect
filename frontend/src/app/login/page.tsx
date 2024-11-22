@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export default function LoginSection() {
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+    <section className="w-screen h-screen flex items-center justify-center bg-muted">
       <div className="container px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           Login
@@ -88,7 +88,7 @@ export default function LoginSection() {
         </Tabs>
         <div className="mt-4 text-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="#" className="text-primary hover:underline">
               Sign Up
             </Link>
