@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import {
   Bell,
   Home,
@@ -16,11 +17,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/sidebar";
 
-// Mock data for demonstration purposes
-const user = {
-  name: "John Doe",
-  avatar: "/placeholder.svg",
-};
+interface User {
+  username: string;
+  email: string;
+  role: string;
+}
 
 const metrics = {
   connections: 15,
@@ -56,6 +57,23 @@ const notifications = [
 ];
 
 export default function Dashboard() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const storedUserDetails = localStorage.getItem("user_details"); // Retrieve user details from localStorage
+    const parsedUser = storedUserDetails ? JSON.parse(storedUserDetails) : null;
+    console.log(parsedUser); // Parse if exists
+
+    if (parsedUser) {
+      setUser(parsedUser); // Set user state with the parsed data
+    }
+    console.log(user);
+  }, []);
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar for larger screens */}
@@ -77,7 +95,7 @@ export default function Dashboard() {
                 <NavItems />
               </div>
               <div className="absolute bottom-4 left-4 right-4">
-                <UserInfo />
+                <UserInfo user={user} />
               </div>
             </SheetContent>
           </Sheet>
@@ -86,7 +104,7 @@ export default function Dashboard() {
         {/* Dashboard content */}
         <ScrollArea className="flex-1 p-4 lg:p-8">
           <div className="space-y-8">
-            <OverviewSection />
+            <OverviewSection user={user} />
             <RecentActivitySection />
             <UserActionsSection />
           </div>
@@ -120,25 +138,27 @@ function NavItems() {
   );
 }
 
-function UserInfo() {
+function UserInfo({ user }: { user: User }) {
   return (
     <div className="flex items-center space-x-4">
       <Avatar>
-        <AvatarImage src={user.avatar} alt={user.name} />
-        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+        <AvatarImage src={user.avatar} alt={user.username} />
+        <AvatarFallback>{user.username}</AvatarFallback>
       </Avatar>
       <div>
-        <p className="text-sm font-medium">{user.name}</p>
+        <p className="text-sm font-medium">{user.username}</p>
         <p className="text-xs text-muted-foreground">View Profile</p>
       </div>
     </div>
   );
 }
 
-function OverviewSection() {
+function OverviewSection({ user }: { user: User }) {
   return (
     <section>
-      <h2 className="text-3xl font-bold mb-4">Welcome back, {user.name}!</h2>
+      <h2 className="text-3xl font-bold mb-4">
+        Welcome back, {user.username}!
+      </h2>
       <div className="grid gap-4 md:grid-cols-3">
         <MetricCard title="Connections" value={metrics.connections} />
         <MetricCard title="Consultations" value={metrics.consultations} />

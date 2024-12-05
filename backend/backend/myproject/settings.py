@@ -37,6 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'allauth.account',
+    'myproject',
+    'django.contrib.sites',
+    'rest_framework',
+    'rest_framework.authtoken',  
+    'corsheaders',
+    'auth_app',
+    'financial_services',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +56,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
+
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # if your frontend runs on this address
+]
+
 
 ROOT_URLCONF = 'myproject.urls'
 
@@ -65,6 +85,16 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'myproject.wsgi.application'
@@ -89,7 +119,7 @@ DATABASES = {
     }
 }
 
-
+AUTH_USER_MODEL='auth_app.User'
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -107,7 +137,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -130,3 +159,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ACCOUNT_EMAIL_REQUIRED = True     # Require email address signup
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" 
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False # Verify email addresses
+LOGIN_REDIRECT_URL = '/'    # URL to redirect to after login
+LOGOUT_REDIRECT_URL = '/'   # URL to redirect to after logout
