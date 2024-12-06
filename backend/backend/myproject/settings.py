@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     'myproject',
     'django.contrib.sites',
     'rest_framework',
@@ -47,6 +50,8 @@ INSTALLED_APPS = [
     'auth_app',
     'financial_services',
 ]
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -166,3 +171,8 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False # Verify email addresses
 LOGIN_REDIRECT_URL = '/'    # URL to redirect to after login
 LOGOUT_REDIRECT_URL = '/'   # URL to redirect to after logout
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_HTTPONLY": False,
+}
