@@ -40,7 +40,7 @@ export default function SignUp() {
     const username = generateUsername(email);
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/signup/`, {
+      const response = await axios.post(`${API_BASE_URL}/register/`, {
         username: username, // Include the dynamically generated username
         email: email,
         password: password,

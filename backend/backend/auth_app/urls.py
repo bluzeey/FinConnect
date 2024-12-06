@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    DeleteAccountView, SignupView, LoginView, ForgotPasswordView, 
+    DeleteAccountView, LoginView, ForgotPasswordView, 
     ResetPasswordView, UpdateProfileView, UserProfileView
 )
 from dj_rest_auth.registration.views import RegisterView
@@ -10,7 +10,6 @@ from dj_rest_auth.jwt_auth import get_refresh_view
 
 urlpatterns = [
     # Authentication APIs
-    path('signup/', SignupView.as_view(), name='signup'),
     path('login/', LoginView.as_view(), name='login'),
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
