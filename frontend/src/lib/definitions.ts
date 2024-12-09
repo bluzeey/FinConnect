@@ -1,4 +1,4 @@
-interface userData {
+export interface userData {
   id: string;
   name: string;
   role: "expert" | "user";
@@ -28,7 +28,9 @@ interface userData {
   pastConsultations?: string[];
   searchPreferences?: string[];
 }
-interface ProfileProps {
+
+
+export interface ProfileProps {
   userData: userData;
   isEditing: boolean;
   editedUser: userData;
