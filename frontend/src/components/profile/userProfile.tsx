@@ -33,7 +33,7 @@ export default function UserProfile({
         </CardContent>
       </Card>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Saved Experts</CardTitle>
         </CardHeader>
@@ -49,9 +49,9 @@ export default function UserProfile({
             ))}
           </ul>
         </CardContent>
-      </Card>
+      </Card> */}
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Past Consultations</CardTitle>
         </CardHeader>
@@ -67,9 +67,9 @@ export default function UserProfile({
             ))}
           </ul>
         </CardContent>
-      </Card>
+      </Card> */}
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Search Preferences</CardTitle>
         </CardHeader>
@@ -85,7 +85,7 @@ export default function UserProfile({
             <Search className="mr-2 h-4 w-4" /> Start New Search
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
     </>
   );
 }

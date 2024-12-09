@@ -8,7 +8,7 @@ from django.utils.encoding import force_bytes
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import (
-    CustomTokenObtainPairSerializer, RegisterSerializer, LoginSerializer, 
+    MyTokenObtainPairSerializer, RegisterSerializer, LoginSerializer, 
     ForgotPasswordSerializer, ResetPasswordSerializer, UserSerializer
 )
 
@@ -115,34 +115,26 @@ class ResetPasswordView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Get the validated user from the serializer
-        user = serializer.validated_data['user']
-        
-        # Generate token using the serializer class
-        token = self.serializer_class.get_token(user)
-        
-        # Return the token as a response
-        return Response(token, status=status.HTTP_200_OK)
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class UserProfileView(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user
+    def get(self, request):
+        user = request.user  # Use the user directly from the request
+        user_data = {
+            'username': user.username,
+            'email': user.email,
+        }
+        return Response(user_data)
 
 class UpdateProfileView(generics.UpdateAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
+
         return self.request.user
 
 class DeleteAccountView(APIView):

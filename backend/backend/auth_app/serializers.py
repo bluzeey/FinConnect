@@ -4,14 +4,13 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
 
 # JWT Token Serializer
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Custom claims
         token['email'] = user.email
-        token['role'] = user.role
-        return token
+        token['username'] = user.username
+        return token 
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):

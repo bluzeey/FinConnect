@@ -15,11 +15,11 @@ import {userData,ProfileProps} from "@/lib/definitions";
 import UserProfile from "@/components/profile/userProfile";
 import ExpertProfile from "@/components/profile/expertProfile";
 
-// Base URL for your API
-const BASE_URL = "http://localhost:8000/auth/user/";
+const BASE_URL = "http://localhost:8000/auth/user/"; 
 
+// Base URL for your API
 export default function ProfilePage() {
-  const {authTokens} = useAuth()
+  const { authTokens } = useAuth(); 
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState(null);
   const [editedUser, setEditedUser] = useState(null);
@@ -30,17 +30,19 @@ export default function ProfilePage() {
       try {
         const response = await axios.get(`${BASE_URL}profile/`, {
           headers: {
-            Authorization: `Bearer ${authTokens?.access}`, // Replace with the actual token
+            Authorization: `Bearer ${authTokens?.access}`, 
           },
         });
         setUserData(response.data);
-        setEditedUser(response.data); // Set the initial user data for editing
+        setEditedUser(response.data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
       }
     };
 
-    fetchUserData();
+    if (authTokens?.access) { 
+      fetchUserData();
+    }
   }, [authTokens]);
 
   const handleEdit = () => {
@@ -51,7 +53,7 @@ export default function ProfilePage() {
     try {
       await axios.put(`${BASE_URL}update-profile/`, editedUser, {
         headers: {
-          Authorization: `Bearer YOUR_ACCESS_TOKEN`, // Replace with actual token
+          Authorization: `Bearer ${authTokens?.access}`, // Use the access token
         },
       });
       setIsEditing(false);
@@ -67,11 +69,10 @@ export default function ProfilePage() {
       try {
         await axios.delete(`${BASE_URL}delete-account/`, {
           headers: {
-            Authorization: `Bearer YOUR_ACCESS_TOKEN`, // Replace with actual token
+            Authorization: `Bearer ${authTokens?.access}`, 
           },
         });
         alert("Account deleted successfully!");
-        // Redirect or perform any other necessary action after deletion
       } catch (error) {
         console.error("Error deleting user account:", error);
       }
@@ -92,10 +93,10 @@ export default function ProfilePage() {
         <header className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <Avatar className="w-32 h-32">
             <AvatarImage src={userData.profilePicture} alt={userData.name} />
-            <AvatarFallback>{userData.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback>{userData.username.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold">{userData.name}</h1>
+            <h1 className="text-3xl font-bold">{userData.username}</h1>
             {userData.role === "expert" && (
               <p className="text-xl text-muted-foreground">{userData.title}</p>
             )}
@@ -208,5 +209,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-
