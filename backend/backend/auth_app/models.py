@@ -9,6 +9,7 @@ class User(AbstractUser):
         ('business', 'Business User'),
         ('expert', 'Financial Expert'),
     ]
+    email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True, blank=True)
     profile_picture = models.URLField(blank=True, null=True)
 

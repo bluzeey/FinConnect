@@ -1,8 +1,8 @@
 "use client";
+
 import React, { useState } from "react";
-import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button"; // Button component
+import { Input } from "@/components/ui/input"; // Input component
 import {
   Card,
   CardContent,
@@ -12,49 +12,48 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
+import { useAuth } from "../../context/AuthContext"; // Import your AuthContext
 
 export default function SignUp() {
   const [businessEmail, setBusinessEmail] = useState("");
   const [businessPassword, setBusinessPassword] = useState("");
+  const [businessUsername, setBusinessUsername] = useState("");
   const [expertEmail, setExpertEmail] = useState("");
   const [expertPassword, setExpertPassword] = useState("");
-
-  const API_BASE_URL = "http://localhost:8000/auth"; // Replace with your backend URL
-
-  const generateUsername = (email: string) => {
-    // Extract the part before '@' in the email
-    return email.split("@")[0];
-  };
+  const [expertUsername, setExpertUsername] = useState("");
+  const { registerUser } = useAuth(); // Extracting registerUser from context
 
   const handleSignUp = async (userType: string) => {
     const email = userType === "business" ? businessEmail : expertEmail;
     const password =
       userType === "business" ? businessPassword : expertPassword;
+    const username =
+      userType === "business" ? businessUsername : expertUsername;
 
-    if (!email || !password) {
-      alert("Please fill in all the fields");
+    if (!email || !password || !username) {
+      alert("Please fill in all fields");
       return;
     }
 
-    // Generate a username based on email
-    const username = generateUsername(email);
-
     try {
-      const response = await axios.post(`${API_BASE_URL}/register/`, {
-        username: username, // Include the dynamically generated username
-        email: email,
-        password: password,
-        role: userType, // Pass the user type as role
+      const result = await registerUser({
+        username,
+        email,
+        password,
+        password2: password, // Assuming this is your password confirmation field
       });
 
-      console.log("User registered successfully:", response.data);
-      alert("Account created successfully!");
+      if (result.success) {
+        alert("Account created successfully!"); // Display success message
+        // Optionally, redirect to a different page
+      } else {
+        throw new Error(result.errors?.email || "Registration failed"); // Handle errors from registerUser
+      }
     } catch (error) {
-      console.error(
-        "Registration failed:",
-        error.response ? error.response.data : error.message
+      console.error("Registration failed:", error);
+      alert(
+        "Failed to create account: " + (error.message || "Unexpected error")
       );
-      alert("Failed to create account");
     }
   };
 
@@ -69,6 +68,7 @@ export default function SignUp() {
             <TabsTrigger value="business">Business</TabsTrigger>
             <TabsTrigger value="expert">Expert</TabsTrigger>
           </TabsList>
+          {/* Business Sign Up */}
           <TabsContent value="business">
             <Card>
               <CardHeader>
@@ -78,6 +78,16 @@ export default function SignUp() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <label htmlFor="business-username">Username</label>
+                  <Input
+                    id="business-username"
+                    type="text"
+                    value={businessUsername}
+                    onChange={(e) => setBusinessUsername(e.target.value)}
+                    required
+                  />
+                </div>
                 <div className="space-y-1">
                   <label htmlFor="business-email">Email</label>
                   <Input
@@ -109,6 +119,7 @@ export default function SignUp() {
               </CardContent>
             </Card>
           </TabsContent>
+          {/* Expert Sign Up */}
           <TabsContent value="expert">
             <Card>
               <CardHeader>
@@ -118,6 +129,16 @@ export default function SignUp() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <label htmlFor="expert-username">Username</label>
+                  <Input
+                    id="expert-username"
+                    type="text"
+                    value={expertUsername}
+                    onChange={(e) => setExpertUsername(e.target.value)}
+                    required
+                  />
+                </div>
                 <div className="space-y-1">
                   <label htmlFor="expert-email">Email</label>
                   <Input

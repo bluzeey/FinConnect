@@ -16,6 +16,9 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/sidebar";
+import { useAuth } from "../../context/AuthContext";
+import Menu from "@/components/dashboard/menu";
+import RecentActivitySection from "@/components/dashboard/recentActivity"; // Import your AuthContext
 
 interface User {
   username: string;
@@ -29,58 +32,19 @@ const metrics = {
   pendingRequests: 3,
 };
 
-const recentActivities = [
-  {
-    id: 1,
-    type: "message",
-    content: "New message from Jane Smith",
-    timestamp: "2 hours ago",
-  },
-  {
-    id: 2,
-    type: "request",
-    content: "Quote request from Tech Innovators Inc.",
-    timestamp: "1 day ago",
-  },
-  {
-    id: 3,
-    type: "review",
-    content: "New review from Global Traders Ltd.",
-    timestamp: "3 days ago",
-  },
-];
+const Dashboard = () => {
+  const { user } = useAuth();
+  console.log(user); // Retrieve user from context
 
-const notifications = [
-  { id: 1, content: "New message received", isRead: false },
-  { id: 2, content: "Your quote was accepted", isRead: true },
-  { id: 3, content: "Reminder: Upcoming consultation", isRead: false },
-];
-
-export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const storedUserDetails = localStorage.getItem("user_details"); // Retrieve user details from localStorage
-    const parsedUser = storedUserDetails ? JSON.parse(storedUserDetails) : null;
-    console.log(parsedUser); // Parse if exists
-
-    if (parsedUser) {
-      setUser(parsedUser); // Set user state with the parsed data
-    }
-    console.log(user);
-  }, []);
-
+  // Early return if user is not set
   if (!user) {
     return null;
   }
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar for larger screens */}
       <Sidebar activeTab="Dashboard" />
-      {/* Main content area */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar for mobile */}
         <header className="lg:hidden flex items-center justify-between p-4 border-b">
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <Sheet>
@@ -91,7 +55,7 @@ export default function Dashboard() {
             </SheetTrigger>
             <SheetContent side="left">
               <div className="py-4">
-                <h2 className="text-2xl font-bold mb-4">Finder Service</h2>
+                <h2 className="text-2xl font-bold mb-4">FinConnect</h2>
                 <NavItems />
               </div>
               <div className="absolute bottom-4 left-4 right-4">
@@ -101,7 +65,6 @@ export default function Dashboard() {
           </Sheet>
         </header>
 
-        {/* Dashboard content */}
         <ScrollArea className="flex-1 p-4 lg:p-8">
           <div className="space-y-8">
             <OverviewSection user={user} />
@@ -112,7 +75,7 @@ export default function Dashboard() {
       </main>
     </div>
   );
-}
+};
 
 function NavItems() {
   const navItems = [
@@ -181,30 +144,6 @@ function MetricCard({ title, value }: { title: string; value: number }) {
   );
 }
 
-function RecentActivitySection() {
-  return (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
-      <Card>
-        <CardContent className="p-0">
-          <ul className="divide-y">
-            {recentActivities.map((activity) => (
-              <li key={activity.id} className="p-4 hover:bg-muted/50">
-                <div className="flex justify-between items-start">
-                  <p>{activity.content}</p>
-                  <span className="text-xs text-muted-foreground">
-                    {activity.timestamp}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-    </section>
-  );
-}
-
 function UserActionsSection() {
   return (
     <section>
@@ -239,23 +178,4 @@ function NotificationsButton() {
   );
 }
 
-function Menu(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="4" x2="20" y1="12" y2="12" />
-      <line x1="4" x2="20" y1="6" y2="6" />
-      <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>
-  );
-}
+export default Dashboard;

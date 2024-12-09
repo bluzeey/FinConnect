@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rest_framework',
     'rest_framework.authtoken',  
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+
     'corsheaders',
     'auth_app',
     'financial_services',
@@ -71,7 +74,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "http://127.0.0.1:3000/",
+    "http://127.0.0.1:3000",
 ]
 
 

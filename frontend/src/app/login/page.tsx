@@ -1,9 +1,10 @@
 "use client";
+
 import React, { useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/navigation"; // Import Next.js router
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useAuth } from "../../context/AuthContext"; // Import your AuthContext
+import Link from "next/link";
+import { Button } from "@/components/ui/button"; // Button component
+import { Input } from "@/components/ui/input"; // Input component
 import {
   Card,
   CardContent,
@@ -12,16 +13,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+import { useRouter } from "next/navigation"; // Import Next.js router
 
-export default function LoginSection() {
+export default function Login() {
   const [businessEmail, setBusinessEmail] = useState("");
   const [businessPassword, setBusinessPassword] = useState("");
   const [expertEmail, setExpertEmail] = useState("");
   const [expertPassword, setExpertPassword] = useState("");
 
-  const API_BASE_URL = "http://localhost:8000/auth"; // Update with your actual backend URL
-  const router = useRouter(); // Initialize the router
+  const { loginUser } = useAuth();
+  const router = useRouter();
 
   const handleLogin = async (userType: string) => {
     const email = userType === "business" ? businessEmail : expertEmail;
@@ -29,43 +30,29 @@ export default function LoginSection() {
       userType === "business" ? businessPassword : expertPassword;
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/login/`, {
-        email: email,
-        password: password,
-        userType: userType,
-      });
+      // Use the loginUser function from AuthContext
+      await loginUser({ email, password });
 
-      if (response.status === 200) {
-        // Assume the response contains access_token and user_details
-        const { access_token, user_details } = response.data;
-
-        // Store user data
-        localStorage.setItem("access_token", access_token);
-        localStorage.setItem("user_details", JSON.stringify(user_details));
-
-        // Redirect to the dashboard
-        router.push("/dashboard"); // Adjust the path as needed
-      }
+      // Redirect to dashboard after successful login
+      router.push("/dashboard"); // Adjust the path as needed
     } catch (error) {
-      console.error(
-        "Login failed:",
-        error.response ? error.response.data : error.message
-      );
       alert("Invalid Credentials");
     }
   };
 
   return (
-    <section className="w-screen h-screen flex items-center justify-center bg-muted">
-      <div className="container px-4 md:px-6">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
-          Login
+    <div className="h-[calc(100vh-var(--navbar-height))] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Log in to your account
         </h2>
         <Tabs defaultValue="business" className="w-full max-w-md mx-auto">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="business">Business</TabsTrigger>
             <TabsTrigger value="expert">Expert</TabsTrigger>
           </TabsList>
+
+          {/* Business Login */}
           <TabsContent value="business">
             <Card>
               <CardHeader>
@@ -76,21 +63,23 @@ export default function LoginSection() {
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="business-email">Email</label>
                   <Input
-                    id="email"
+                    id="business-email"
                     type="email"
                     value={businessEmail}
                     onChange={(e) => setBusinessEmail(e.target.value)}
+                    placeholder="Email address"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="business-password">Password</label>
                   <Input
-                    id="password"
+                    id="business-password"
                     type="password"
                     value={businessPassword}
                     onChange={(e) => setBusinessPassword(e.target.value)}
+                    placeholder="Password"
                   />
                 </div>
                 <div className="flex justify-between">
@@ -112,6 +101,8 @@ export default function LoginSection() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Expert Login */}
           <TabsContent value="expert">
             <Card>
               <CardHeader>
@@ -128,6 +119,7 @@ export default function LoginSection() {
                     type="email"
                     value={expertEmail}
                     onChange={(e) => setExpertEmail(e.target.value)}
+                    placeholder="Email address"
                   />
                 </div>
                 <div className="space-y-1">
@@ -137,6 +129,7 @@ export default function LoginSection() {
                     type="password"
                     value={expertPassword}
                     onChange={(e) => setExpertPassword(e.target.value)}
+                    placeholder="Password"
                   />
                 </div>
               </CardContent>
@@ -160,6 +153,6 @@ export default function LoginSection() {
           </p>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
